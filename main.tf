@@ -69,6 +69,10 @@ EOF
   }
 }
 
+####################
+# RESOURCES
+####################
+
 resource "aws_iam_role" "web-monitor-role" {
   name = "web-monitor-role"
 
