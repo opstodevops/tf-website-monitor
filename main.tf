@@ -27,7 +27,7 @@ provider "aws" {
 ####################
 
 # define a zip archive
-data "archive_file" "web-monitor-zip" {
+data "archive_file" "web_monitor_zip" {
   type        = "zip"
   output_path = "/tmp/web-monitor.zip"
   source {
@@ -73,8 +73,8 @@ EOF
 # RESOURCES
 ####################
 
-resource "aws_iam_role" "web-monitor-role" {
-  name = "web-monitor-role"
+resource "aws_iam_role" "web_monitor_role" {
+  name = "webmonitor-role"
 
   assume_role_policy = <<EOF
 {
@@ -94,7 +94,7 @@ EOF
 }
 
 # See also the following AWS managed policy: AWSLambdaBasicExecutionRole
-resource "aws_iam_policy" "web-monitor-logging" {
+resource "aws_iam_policy" "web_monitor_logging" {
   name        = "lambda_logging"
   path        = "/"
   description = "IAM policy for logging from a lambda"
@@ -117,18 +117,18 @@ resource "aws_iam_policy" "web-monitor-logging" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "web-monitor-logs" {
-  role       = aws_iam_role.web-monitor-role.name
-  policy_arn = aws_iam_policy.web-monitor-logging.arn
+resource "aws_iam_role_policy_attachment" "web_monitor_logs" {
+  role       = aws_iam_role.web_monitor_role.name
+  policy_arn = aws_iam_policy.web_monitor_logging.arn
 }
 
-resource "aws_lambda_function" "web-monitor-inline" {
-  function_name    = "web-monitor-function"
-  role             = aws_iam_role.web-monitor-role.arn
+resource "aws_lambda_function" "web_monitor_inline" {
+  function_name    = "webmonitor-function"
+  role             = aws_iam_role.web_monitor_role.arn
   handler          = "lambda_function.lambda_handler"
   runtime          = "python3.7"
-  filename         = data.archive_file.web-monitor-zip.output_path
-  source_code_hash = data.archive_file.web-monitor-zip.output_base64sha256
+  filename         = data.archive_file.web_monitor_zip.output_path
+  source_code_hash = data.archive_file.web_monitor_zip.output_base64sha256
 
   environment {
     variables = {
@@ -138,7 +138,7 @@ resource "aws_lambda_function" "web-monitor-inline" {
   }
 }
 
-resource "aws_cloudwatch_log_group" "web-monitor-log-group" {
+resource "aws_cloudwatch_log_group" "web_monitor_log_group" {
   name              = "/aws/lambda/web-monitor-function"
   retention_in_days = 14
 }
